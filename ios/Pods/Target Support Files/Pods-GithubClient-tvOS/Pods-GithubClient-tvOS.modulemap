@@ -1,6 +1,0 @@
-framework module Pods_GithubClient_tvOS {
-  umbrella header "Pods-GithubClient-tvOS-umbrella.h"
-
-  export *
-  module * { export * }
-}

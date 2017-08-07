@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { Platform, View, Image, StyleSheet } from 'react-native';
 import { FormLabel, FormInput, Button } from 'react-native-elements';
-import OAuthManager from 'react-native-oauth';
 import {
   IOS_CLIENT_ID,
   IOS_CLIENT_SECRET,
@@ -59,18 +58,6 @@ class Login extends Component {
         client_secret: Platform.os === 'ios' ? IOS_CLIENT_SECRET : ANDROID_CLIENT_SECRET,
       },
     };
-
-    const manager = new OAuthManager('rnghclient');
-    manager.configure(config);
-
-    manager
-      .authorize('github', { scopes: 'user public_repo repo' })
-      .then(res => {
-        console.log('RESPONSE', res);
-      })
-      .catch(err => {
-        console.error(err);
-      });
   }
 
   render() {

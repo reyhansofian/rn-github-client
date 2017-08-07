@@ -1,6 +1,0 @@
-framework module Pods_GithubClient_tvOSTests {
-  umbrella header "Pods-GithubClient-tvOSTests-umbrella.h"
-
-  export *
-  module * { export * }
-}

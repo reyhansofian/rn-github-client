@@ -26,7 +26,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>Github</string>
+			<string>com.reyhansofian.rnghclient</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>rnghclient</string>
