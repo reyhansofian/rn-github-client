@@ -1,8 +1,15 @@
 // @flow
 
 import React, { Component } from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { Platform, View, Image, StyleSheet } from 'react-native';
 import { FormLabel, FormInput, Button } from 'react-native-elements';
+import OAuthManager from 'react-native-oauth';
+import {
+  IOS_CLIENT_ID,
+  IOS_CLIENT_SECRET,
+  ANDROID_CLIENT_ID,
+  ANDROID_CLIENT_SECRET,
+} from 'react-native-dotenv';
 
 import Images from '@assets/images';
 import Styles from '@assets/styles';
@@ -24,10 +31,12 @@ class Login extends Component {
     this.state = {
       username: '',
       password: '',
+      token: '',
     };
 
     this.handleUsername = this.handleUsername.bind(this);
     this.handlePassword = this.handlePassword.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
 
   handleUsername(value) {
@@ -42,6 +51,28 @@ class Login extends Component {
     });
   }
 
+  // eslint-disable-next-line
+  handleLogin() {
+    const config = {
+      github: {
+        client_id: Platform.os === 'ios' ? IOS_CLIENT_ID : ANDROID_CLIENT_ID,
+        client_secret: Platform.os === 'ios' ? IOS_CLIENT_SECRET : ANDROID_CLIENT_SECRET,
+      },
+    };
+
+    const manager = new OAuthManager('rnghclient');
+    manager.configure(config);
+
+    manager
+      .authorize('github', { scopes: 'user public_repo repo' })
+      .then(res => {
+        console.log('RESPONSE', res);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+
   render() {
     return (
       <View style={style.container}>
@@ -52,7 +83,7 @@ class Login extends Component {
         <FormInput onChangeText={this.handleUsername} autoCapitalize={'none'} />
         <FormLabel style={style.formLabel}>Password</FormLabel>
         <FormInput onChangeText={this.handlePassword} secureTextEntry />
-        <Button title={'Login'} buttonStyle={style.loginButton} />
+        <Button title={'Login'} buttonStyle={style.loginButton} onPress={this.handleLogin} />
       </View>
     );
   }

@@ -7,11 +7,6 @@ target 'GithubClient' do
 
   # Pods for GithubClient
 
-  target 'GithubClient-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
   target 'GithubClientTests' do
     inherit! :search_paths
     # Pods for testing
