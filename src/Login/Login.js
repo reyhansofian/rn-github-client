@@ -1,15 +1,18 @@
 // @flow
 
 import React, { Component } from 'react';
-import { Platform, View, Image, StyleSheet } from 'react-native';
+import { Platform, View, Image, StyleSheet, Linking } from 'react-native';
 import { FormLabel, FormInput, Button } from 'react-native-elements';
 import {
-  IOS_CLIENT_ID,
   IOS_CLIENT_SECRET,
   ANDROID_CLIENT_ID,
   ANDROID_CLIENT_SECRET,
+  IOS_CLIENT_ID,
 } from 'react-native-dotenv';
+import queryString from 'query-string';
+import SafariView from 'react-native-safari-view';
 
+import { openURLInView } from '../utils/helpers';
 import Images from '@assets/images';
 import Styles from '@assets/styles';
 
@@ -23,42 +26,55 @@ const style = StyleSheet.create({
   loginButton: { marginTop: 20 },
 });
 
+const stateRandom = Math.random().toString();
+const config = {
+  clientId: Platform.OS === 'ios' ? IOS_CLIENT_ID : ANDROID_CLIENT_ID,
+  clientSecret: Platform.os === 'ios' ? IOS_CLIENT_SECRET : ANDROID_CLIENT_SECRET,
+};
+
 class Login extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      username: '',
-      password: '',
-      token: '',
+      code: '',
     };
-
-    this.handleUsername = this.handleUsername.bind(this);
-    this.handlePassword = this.handlePassword.bind(this);
-    this.handleLogin = this.handleLogin.bind(this);
   }
 
-  handleUsername(value) {
-    this.setState({
-      username: value,
+  componentDidMount() {
+    Linking.addEventListener('url', this.handleOpenURL);
+    Linking.getInitialURL().then(url => {
+      if (url) {
+        this.handleOpenURL({ url });
+      }
     });
   }
 
-  handlePassword(value) {
-    this.setState({
-      password: value,
-    });
+  componentWillUnmount() {
+    Linking.removeEventListener('url', this.handleOpenURL);
   }
 
-  // eslint-disable-next-line
-  handleLogin() {
-    const config = {
-      github: {
-        client_id: Platform.os === 'ios' ? IOS_CLIENT_ID : ANDROID_CLIENT_ID,
-        client_secret: Platform.os === 'ios' ? IOS_CLIENT_SECRET : ANDROID_CLIENT_SECRET,
-      },
-    };
-  }
+  signIn = () =>
+    openURLInView(
+      [
+        'https://github.com/login/oauth/authorize?response_type=token&',
+        `client_id=${config.clientId}&`,
+        `redirect_uri=rnghclient://welcome&scope=user%20repo&state=${stateRandom}`,
+      ].join('')
+    );
+
+  handleOpenURL = ({ url }) => {
+    const [, queryStringFromUrl] = url.match(/\?(.*)/);
+    const { state, code } = queryString.parse(queryStringFromUrl);
+
+    if (stateRandom === state) {
+      this.setState({ code });
+    }
+
+    if (Platform.OS === 'ios') {
+      SafariView.dismiss();
+    }
+  };
 
   render() {
     return (
@@ -66,11 +82,7 @@ class Login extends Component {
         <Styles.flexCenterView>
           <Image source={Images.githubLogo} style={style.logo} />
         </Styles.flexCenterView>
-        <FormLabel style={style.formLabel}>Username / Email</FormLabel>
-        <FormInput onChangeText={this.handleUsername} autoCapitalize={'none'} />
-        <FormLabel style={style.formLabel}>Password</FormLabel>
-        <FormInput onChangeText={this.handlePassword} secureTextEntry />
-        <Button title={'Login'} buttonStyle={style.loginButton} onPress={this.handleLogin} />
+        <Button title={'Login'} buttonStyle={style.loginButton} onPress={() => this.signIn()} />
       </View>
     );
   }
