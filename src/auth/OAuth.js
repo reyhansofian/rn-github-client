@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Welcome extends Component {
+export class OAuth extends Component {
   props: {
     language: string,
     isLoggingIn: boolean,

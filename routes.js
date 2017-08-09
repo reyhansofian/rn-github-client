@@ -3,8 +3,7 @@ import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 
-import Login from './src/Login/Login';
-import Welcome from './src/Welcome/Welcome';
+import { Login, OAuth } from './src/auth';
 
 export const GithubClient = StackNavigator(
   {
@@ -14,12 +13,12 @@ export const GithubClient = StackNavigator(
         header: null,
       },
     },
-    Welcome: {
-      screen: Welcome,
+    OAuth: {
+      screen: OAuth,
       navigationOptions: {
         header: null,
       },
-      path: 'welcome',
+      path: 'oauth',
     },
   },
   {

@@ -32,7 +32,7 @@ const config = {
   clientSecret: Platform.os === 'ios' ? IOS_CLIENT_SECRET : ANDROID_CLIENT_SECRET,
 };
 
-class Login extends Component {
+export class Login extends Component {
   constructor(props) {
     super(props);
 
@@ -59,7 +59,7 @@ class Login extends Component {
       [
         'https://github.com/login/oauth/authorize?response_type=token&',
         `client_id=${config.clientId}&`,
-        `redirect_uri=rnghclient://welcome&scope=user%20repo&state=${stateRandom}`,
+        `redirect_uri=rnghclient://oauth&scope=user%20repo&state=${stateRandom}`,
       ].join('')
     );
 
@@ -87,5 +87,3 @@ class Login extends Component {
     );
   }
 }
-
-export default Login;
