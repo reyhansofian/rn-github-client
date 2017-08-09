@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 
 import { ViewContainer } from '../components';
@@ -17,19 +18,27 @@ const styles = StyleSheet.create({
   },
 });
 
-export class OAuth extends Component {
+class _OAuth extends Component {
   props: {
-    language: string,
     isLoggingIn: boolean,
   };
 
   render() {
+    const { isLoggingIn } = this.props;
+
     return (
       <ViewContainer>
         <View style={styles.container}>
-          <Text style={styles.welcomeMessage}>Welcome</Text>
+          <Text style={styles.welcomeMessage}>Logging you in...</Text>
+          <ActivityIndicator animating={isLoggingIn} style={styles.loadingIcon} />
         </View>
       </ViewContainer>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  isLoggingIn: state.auth.isLoggingIn,
+});
+
+export const OAuth = connect(mapStateToProps)(_OAuth);

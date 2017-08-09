@@ -3,18 +3,15 @@
 import React, { Component } from 'react';
 import { Platform, View, Image, StyleSheet, Linking } from 'react-native';
 import { FormLabel, FormInput, Button } from 'react-native-elements';
-import {
-  IOS_CLIENT_SECRET,
-  ANDROID_CLIENT_ID,
-  ANDROID_CLIENT_SECRET,
-  IOS_CLIENT_ID,
-} from 'react-native-dotenv';
+import { connect } from 'react-redux';
 import queryString from 'query-string';
 import SafariView from 'react-native-safari-view';
 
-import { openURLInView } from '../utils/helpers';
 import Images from '@assets/images';
 import Styles from '@assets/styles';
+import { openURLInView, resetNavigationTo } from '../utils/helpers';
+import { config } from '../api';
+import { login } from './authActions';
 
 const style = StyleSheet.create({
   logo: {
@@ -27,12 +24,13 @@ const style = StyleSheet.create({
 });
 
 const stateRandom = Math.random().toString();
-const config = {
-  clientId: Platform.OS === 'ios' ? IOS_CLIENT_ID : ANDROID_CLIENT_ID,
-  clientSecret: Platform.os === 'ios' ? IOS_CLIENT_SECRET : ANDROID_CLIENT_SECRET,
-};
 
-export class Login extends Component {
+class _Login extends Component {
+  props: {
+    navigation: Object,
+    dispatch: Function,
+  };
+
   constructor(props) {
     super(props);
 
@@ -66,9 +64,16 @@ export class Login extends Component {
   handleOpenURL = ({ url }) => {
     const [, queryStringFromUrl] = url.match(/\?(.*)/);
     const { state, code } = queryString.parse(queryStringFromUrl);
+    const { dispatch, navigation } = this.props;
 
     if (stateRandom === state) {
       this.setState({ code });
+
+      Promise.resolve(dispatch(login(code, state))).then(() => {
+        setTimeout(() => {
+          resetNavigationTo('Login', navigation);
+        }, 2000);
+      });
     }
 
     if (Platform.OS === 'ios') {
@@ -87,3 +92,5 @@ export class Login extends Component {
     );
   }
 }
+
+export const Login = connect()(_Login);
