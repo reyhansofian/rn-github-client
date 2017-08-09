@@ -24,11 +24,13 @@ export const authReducer = (state = initialState, action = {}) => {
     case 'LOGIN_SUCCESS':
       return Object.assign({}, state, {
         isLoggingIn: false,
+        isAuthenticated: true,
         accessToken: payload.access_token,
       });
     case 'LOGIN_FAILED':
       return Object.assign({}, state, {
         isLoggingIn: false,
+        isAuthenticated: false,
         error: payload.error,
       });
     default:

@@ -29,6 +29,7 @@ class _Login extends Component {
   props: {
     navigation: Object,
     dispatch: Function,
+    isAuthenticated: Boolean,
   };
 
   constructor(props) {
@@ -46,6 +47,10 @@ class _Login extends Component {
         this.handleOpenURL({ url });
       }
     });
+
+    if (this.props.isAuthenticated) {
+      this.props.navigation.navigate('Main');
+    }
   }
 
   componentWillUnmount() {
@@ -93,4 +98,8 @@ class _Login extends Component {
   }
 }
 
-export const Login = connect()(_Login);
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export const Login = connect(mapStateToProps)(_Login);
