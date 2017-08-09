@@ -28,6 +28,7 @@ export const authReducer = (state = initialState, action = {}) => {
       });
     case 'LOGIN_FAILED':
       return Object.assign({}, state, {
+        isLoggingIn: false,
         error: payload.error,
       });
     default:

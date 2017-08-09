@@ -71,7 +71,7 @@ class _Login extends Component {
 
       Promise.resolve(dispatch(login(code, state))).then(() => {
         setTimeout(() => {
-          resetNavigationTo('Login', navigation);
+          navigation.navigate('Main');
         }, 2000);
       });
     }

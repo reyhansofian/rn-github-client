@@ -1,18 +1,19 @@
 // @flow
 
 import React, { Component } from 'react';
-import { Provider } from 'react-redux';
 import { AppRegistry } from 'react-native';
+import { ApolloProvider } from 'react-apollo';
 
 import { GithubClient } from './routes';
 import { configureStore } from './rootStore';
+import { graphqlClient } from './rootGraphql';
 
 class App extends Component {
   render() {
     return (
-      <Provider store={configureStore}>
+      <ApolloProvider client={graphqlClient} store={configureStore}>
         <GithubClient onNavigationStateChange={null} />
-      </Provider>
+      </ApolloProvider>
     );
   }
 }
