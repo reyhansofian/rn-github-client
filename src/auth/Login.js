@@ -1,15 +1,17 @@
+/* eslint import/no-extraneous-dependencies: 0 */
+
 // @flow
 
 import React, { Component } from 'react';
 import { Platform, View, Image, StyleSheet, Linking } from 'react-native';
-import { FormLabel, FormInput, Button } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 import queryString from 'query-string';
 import SafariView from 'react-native-safari-view';
 
 import Images from '@assets/images';
 import Styles from '@assets/styles';
-import { openURLInView, resetNavigationTo } from '../utils/helpers';
+import { openURLInView } from '../utils/helpers';
 import { config } from '../api';
 import { login } from './authActions';
 
@@ -30,15 +32,12 @@ class _Login extends Component {
     navigation: Object,
     dispatch: Function,
     isAuthenticated: Boolean,
+    accessToken: string,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      code: '',
-    };
-  }
+  state = {
+    code: '',
+  };
 
   componentDidMount() {
     Linking.addEventListener('url', this.handleOpenURL);
@@ -48,7 +47,7 @@ class _Login extends Component {
       }
     });
 
-    if (this.props.isAuthenticated) {
+    if (this.props.accessToken && this.props.isAuthenticated) {
       this.props.navigation.navigate('Main');
     }
   }
@@ -100,6 +99,7 @@ class _Login extends Component {
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
+  accessToken: state.auth.accessToken,
 });
 
 export const Login = connect(mapStateToProps)(_Login);

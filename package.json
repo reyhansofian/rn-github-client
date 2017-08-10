@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "flow": "node_modules/.bin/flow",
+    "flow-stop": "node_modules/.bin/flow stop"
   },
   "dependencies": {
     "glamorous-native": "^1.1.1",
@@ -35,7 +37,7 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-react-native": "^3.0.1",
-    "flow-bin": "^0.52.0",
+    "flow-bin": "^0.47.0",
     "husky": "^0.14.3",
     "jest": "20.0.4",
     "lint-staged": "^4.0.2",

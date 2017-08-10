@@ -2,12 +2,12 @@
 
 import React, { Component } from 'react';
 import { AppRegistry, AsyncStorage, StyleSheet, Image } from 'react-native';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider, ApolloClient, createNetworkInterface } from 'react-apollo';
 import { persistStore } from 'redux-persist';
+import { NavigationActions } from 'react-navigation';
 
 import { GithubClient } from './routes';
 import { configureStore } from './rootStore';
-import { graphqlClient } from './rootGraphql';
 import Styles from '@assets/styles';
 import Images from '@assets/images';
 
@@ -18,18 +18,45 @@ const style = StyleSheet.create({
   },
 });
 
+const networkInterface = createNetworkInterface({
+  uri: 'https://api.github.com/graphql',
+});
+
 class App extends Component {
+  state = {
+    isRehydrated: false,
+  };
+
   constructor() {
     super();
-
-    this.state = {
-      isRehydrated: false,
-    };
   }
 
   componentWillMount() {
     persistStore(configureStore, { storage: AsyncStorage }, () => {
       this.setState({ isRehydrated: true });
+    });
+  }
+
+  setGraphqlClient() {
+    const { accessToken } = configureStore.getState().auth;
+
+    if (!accessToken) this.nav && this.nav.dispatch(NavigationActions.navigate('Login'));
+
+    networkInterface.use([
+      {
+        applyMiddleware(req, next) {
+          if (!req.options.headers) {
+            req.options.headers = {}; // Create the header object if needed.
+          }
+          // get the authentication token from local storage if it exists
+          req.options.headers.authorization = accessToken ? `Bearer ${accessToken}` : null;
+          next();
+        },
+      },
+    ]);
+
+    return new ApolloClient({
+      networkInterface,
     });
   }
 
@@ -43,8 +70,12 @@ class App extends Component {
     }
 
     return (
-      <ApolloProvider client={graphqlClient} store={configureStore}>
-        <GithubClient onNavigationStateChange={null} />
+      <ApolloProvider client={this.setGraphqlClient()} store={configureStore}>
+        <GithubClient
+          ref={nav => {
+            this.nav = nav;
+          }}
+        />
       </ApolloProvider>
     );
   }
