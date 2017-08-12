@@ -1,4 +1,4 @@
-fragment Repositories on RepositoryConnection {
+fragment UserRepositories on RepositoryConnection {
     nodes {
         id
         nameWithOwner

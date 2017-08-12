@@ -1,4 +1,4 @@
-fragment StarredRepositories on StarredRepositoryConnection {
+fragment UserStarredRepositories on StarredRepositoryConnection {
     nodes {
         name
         owner {

@@ -1,6 +1,6 @@
-#import "./Repositories.graphql"
-#import "./StarredRepositories.graphql"
-#import "./Organizations.graphql"
+#import "./UserRepositories.graphql"
+#import "./UserStarredRepositories.graphql"
+#import "./UserOrganizations.graphql"
 
 query User($user: String!, $firstCount: Int!) {
     user(login: $user) {
@@ -13,14 +13,14 @@ query User($user: String!, $firstCount: Int!) {
         name
         login
         location
-        organizations(first: $firstCount) {
-            ...Organizations
+        orgs: organizations(first: $firstCount) {
+            ...UserOrganizations
         }
-        repositories(first: $firstCount) {
-            ...Repositories
+        repos: repositories(first: $firstCount) {
+            ...UserRepositories
         }
-        starredRepositories(first: $firstCount) {
-            ...StarredRepositories 
+        stars: starredRepositories(first: $firstCount) {
+            ...UserStarredRepositories 
         }
     }
 }

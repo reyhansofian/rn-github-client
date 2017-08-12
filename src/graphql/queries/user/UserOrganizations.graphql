@@ -1,4 +1,4 @@
-fragment Organizations on OrganizationConnection {
+fragment UserOrganizations on OrganizationConnection {
     nodes {
         name
         avatarUrl

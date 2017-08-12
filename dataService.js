@@ -1,8 +1,6 @@
 import actionHandlers from './rootActionHandler';
 
 const dataService = store => next => action => {
-  const handler = actionHandlers[action.type];
-
   // Handle redux-persist AsyncStorage rehydration
   // so it won't break the action queue
   if (action.type === 'persist/REHYDRATE') {
@@ -11,7 +9,14 @@ const dataService = store => next => action => {
       payload: action.payload,
       error: action.error,
     });
+  } else if (action.type.includes('GRAPHQL')) {
+    next({
+      type: `${action.type}_SUCCESS`,
+      payload: action.payload,
+    });
   } else {
+    const handler = actionHandlers[action.type];
+
     next({
       type: `${action.type}_START`,
       payload: action.payload,
