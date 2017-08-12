@@ -1,6 +1,7 @@
 import { compose, createStore, applyMiddleware } from 'redux';
 import { autoRehydrate } from 'redux-persist';
 import reduxThunk from 'redux-thunk';
+
 import { rootReducer } from './rootReducer';
 import dataService from './dataService';
 

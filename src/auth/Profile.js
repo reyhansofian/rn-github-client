@@ -7,7 +7,7 @@ import USER_QUERY from '../graphql/queries/user/User.graphql';
 class _Profile extends Component {
   props: {
     loading: Boolean,
-    user: Object,
+    user: Object
   };
 
   render() {
@@ -33,9 +33,10 @@ const withGraphql = graphql(USER_QUERY, {
   options: props => ({
     variables: {
       user: 'reyhansofian',
-      firstCount: 10,
+      firstCount: 10
     },
-  }),
+    fetchPolicy: 'cache-and-network'
+  })
 });
 
 export const Profile = withGraphql(_Profile);
