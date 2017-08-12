@@ -1,0 +1,14 @@
+fragment Repositories on RepositoryConnection {
+    nodes {
+        id
+        nameWithOwner
+        description
+        url
+        createdAt
+        updatedAt
+        stargazers(first: $firstCount) {
+            totalCount
+        }
+    }
+}
+

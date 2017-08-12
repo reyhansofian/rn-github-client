@@ -29,7 +29,9 @@ class _OAuth extends Component {
     return (
       <ViewContainer>
         <View style={styles.container}>
-          <Text style={styles.welcomeMessage}>Logging you in...</Text>
+          <Text style={styles.welcomeMessage}>
+            {isLoggingIn ? 'Logging you in...' : 'Restarting application...'}
+          </Text>
           <ActivityIndicator animating={isLoggingIn} style={styles.loadingIcon} />
         </View>
       </ViewContainer>

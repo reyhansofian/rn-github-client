@@ -1,0 +1,26 @@
+#import "./Repositories.graphql"
+#import "./StarredRepositories.graphql"
+#import "./Organizations.graphql"
+
+query User($user: String!, $firstCount: Int!) {
+    user(login: $user) {
+        avatarUrl
+        bio
+        company
+        websiteUrl
+        url
+        email
+        name
+        login
+        location
+        organizations(first: $firstCount) {
+            ...Organizations
+        }
+        repositories(first: $firstCount) {
+            ...Repositories
+        }
+        starredRepositories(first: $firstCount) {
+            ...StarredRepositories 
+        }
+    }
+}

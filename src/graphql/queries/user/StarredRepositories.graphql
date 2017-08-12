@@ -1,0 +1,15 @@
+fragment StarredRepositories on StarredRepositoryConnection {
+    nodes {
+        name
+        owner {
+          id
+          url
+        }
+        nameWithOwner
+        url
+        stargazers(first: $firstCount) { totalCount }
+        primaryLanguage {
+          name
+        }
+    }
+}

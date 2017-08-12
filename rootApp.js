@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { AppRegistry, AsyncStorage, StyleSheet, Image } from 'react-native';
 import { ApolloProvider, ApolloClient, createNetworkInterface } from 'react-apollo';
-import { persistStore } from 'redux-persist';
+import { persistStore, purgeStoredState } from 'redux-persist';
 import { NavigationActions } from 'react-navigation';
 
 import { GithubClient } from './routes';
@@ -26,10 +26,6 @@ class App extends Component {
   state = {
     isRehydrated: false,
   };
-
-  constructor() {
-    super();
-  }
 
   componentWillMount() {
     persistStore(configureStore, { storage: AsyncStorage }, () => {

@@ -3,7 +3,7 @@ import React from 'react';
 import { StackNavigator, TabNavigator, TabBarBottom, NavigationActions } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 
-import { Login, OAuth, Event } from './src/auth';
+import { Login, OAuth, Event, Profile } from './src/auth';
 import Styles from '@assets/styles';
 
 const HomeStackNavigator = StackNavigator(
@@ -20,6 +20,19 @@ const HomeStackNavigator = StackNavigator(
   }
 );
 
+const ProfileStackNavigator = StackNavigator(
+  {
+    Profile: {
+      screen: Profile,
+      navigationOptions: {
+        headerTitle: 'Profile',
+      },
+    },
+  },
+  {
+    headerMode: 'screen',
+  }
+);
 const MainTabNavigator = TabNavigator(
   {
     Home: {
@@ -30,6 +43,18 @@ const MainTabNavigator = TabNavigator(
             containerStyle={{ justifyContent: 'center', alignItems: 'center' }}
             color={tintColor}
             name="home"
+            size={33}
+          />,
+      },
+    },
+    Profile: {
+      screen: ProfileStackNavigator,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) =>
+          <Icon
+            containerStyle={{ justifyContent: 'center', alignItems: 'center' }}
+            color={tintColor}
+            name="person"
             size={33}
           />,
       },
@@ -49,7 +74,7 @@ const MainTabNavigator = TabNavigator(
           const { dispatch, state } = props.navigation;
 
           if (state.index === index && state.routes[index].routes.length > 1) {
-            const stackRouteName = ['Events'][index];
+            const stackRouteName = ['Events', 'Profile'][index];
 
             dispatch(
               NavigationActions.reset({

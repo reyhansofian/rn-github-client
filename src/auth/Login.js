@@ -3,11 +3,13 @@
 // @flow
 
 import React, { Component } from 'react';
-import { Platform, View, Image, StyleSheet, Linking } from 'react-native';
+import { AsyncStorage, Platform, View, Image, StyleSheet, Linking } from 'react-native';
 import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 import queryString from 'query-string';
 import SafariView from 'react-native-safari-view';
+import RNRestart from 'react-native-restart';
+import { createPersistor } from 'redux-persist';
 
 import Images from '@assets/images';
 import Styles from '@assets/styles';
@@ -35,6 +37,10 @@ class _Login extends Component {
     accessToken: string,
   };
 
+  static contextTypes = {
+    store: React.PropTypes.object,
+  };
+
   state = {
     code: '',
   };
@@ -56,28 +62,37 @@ class _Login extends Component {
     Linking.removeEventListener('url', this.handleOpenURL);
   }
 
+  componentWillReceiveProps(props) {
+    if (props.accessToken && props.isAuthenticated) {
+      const persistor = createPersistor(this.context.store, { storage: AsyncStorage });
+
+      Promise.resolve(persistor.rehydrate(props)).then(() => {
+        // This restart is a hack for Apollo client setup
+        setTimeout(() => {
+          RNRestart.Restart();
+        }, 2000);
+      });
+    }
+  }
+
   signIn = () =>
     openURLInView(
       [
         'https://github.com/login/oauth/authorize?response_type=token&',
         `client_id=${config.clientId}&`,
-        `redirect_uri=rnghclient://oauth&scope=user%20repo&state=${stateRandom}`,
+        `redirect_uri=rnghclient://oauth&scope=user%20repo%20read:org&state=${stateRandom}`,
       ].join('')
     );
 
   handleOpenURL = ({ url }) => {
     const [, queryStringFromUrl] = url.match(/\?(.*)/);
     const { state, code } = queryString.parse(queryStringFromUrl);
-    const { dispatch, navigation } = this.props;
+    const { dispatch } = this.props;
 
     if (stateRandom === state) {
       this.setState({ code });
 
-      Promise.resolve(dispatch(login(code, state))).then(() => {
-        setTimeout(() => {
-          navigation.navigate('Main');
-        }, 2000);
-      });
+      dispatch(login(code, state));
     }
 
     if (Platform.OS === 'ios') {

@@ -1,0 +1,7 @@
+fragment Organizations on OrganizationConnection {
+    nodes {
+        name
+        avatarUrl
+        url
+    }
+}
