@@ -9,6 +9,8 @@ const dataService = store => next => action => {
       payload: action.payload,
       error: action.error,
     });
+  } else if (action.type.includes('APOLLO')) {
+    next(Object.assign({}, action));
   } else if (action.type.includes('GRAPHQL')) {
     next({
       type: `${action.type}_SUCCESS`,

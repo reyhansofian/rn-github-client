@@ -4,6 +4,7 @@
 
 query User($user: String!, $firstCount: Int!) {
     user(login: $user) {
+        id
         avatarUrl
         bio
         company

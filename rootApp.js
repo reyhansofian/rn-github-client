@@ -2,12 +2,13 @@
 
 import React, { Component } from 'react';
 import { AppRegistry, AsyncStorage, StyleSheet, Image } from 'react-native';
-import { ApolloProvider, ApolloClient, createNetworkInterface } from 'react-apollo';
-import { persistStore, purgeStoredState } from 'redux-persist';
+import { ApolloProvider } from 'react-apollo';
+import { persistStore } from 'redux-persist';
 import { NavigationActions } from 'react-navigation';
 
 import { GithubClient } from './routes';
 import { configureStore } from './rootStore';
+import { client } from './apolloClient';
 import Styles from '@assets/styles';
 import Images from '@assets/images';
 
@@ -18,14 +19,18 @@ const style = StyleSheet.create({
   },
 });
 
-const networkInterface = createNetworkInterface({
-  uri: 'https://api.github.com/graphql',
-});
-
 class App extends Component {
   state = {
     isRehydrated: false,
   };
+
+  static childContextTypes = {
+    actionDispatcher: React.PropTypes.func,
+  };
+
+  getChildContext() {
+    return { actionDispatcher: configureStore.dispatch };
+  }
 
   componentWillMount() {
     persistStore(configureStore, { storage: AsyncStorage }, () => {
@@ -38,7 +43,7 @@ class App extends Component {
 
     if (!accessToken) this.nav && this.nav.dispatch(NavigationActions.navigate('Login'));
 
-    networkInterface.use([
+    client.networkInterface.use([
       {
         applyMiddleware(req, next) {
           if (!req.options.headers) {
@@ -51,9 +56,7 @@ class App extends Component {
       },
     ]);
 
-    return new ApolloClient({
-      networkInterface,
-    });
+    return client;
   }
 
   render() {

@@ -1,24 +1,29 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
-import { graphql, gql } from 'react-apollo';
-import { connect } from 'react-redux';
+import { graphql } from 'react-apollo';
 
 import USER_QUERY from '../graphql/queries/user/User.graphql';
 import { fetchProfile } from './authActions';
 
 class _Profile extends Component {
   props: {
-    loading: Boolean,
-    user: Object
+    data: {
+      user: Object,
+      loading: Boolean
+    }
+  };
+
+  static contextTypes = {
+    actionDispatcher: React.PropTypes.func
   };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.data.user)
-      this.props.dispatch(fetchProfile(nextProps.data.user));
+      this.context.actionDispatcher(fetchProfile(nextProps.data.user));
   }
 
   render() {
-    const { loading, user } = this.props.data;
+    const { loading } = this.props.data;
 
     if (loading) {
       return (
@@ -37,13 +42,17 @@ class _Profile extends Component {
 }
 
 const withGraphql = graphql(USER_QUERY, {
-  options: props => ({
+  options: () => ({
     variables: {
       user: 'reyhansofian',
       firstCount: 10
     },
-    fetchPolicy: 'cache-and-network'
+    update: (prev, action, variables) => {
+      console.log('[DEBUG] action', action);
+
+      return prev;
+    }
   })
 });
 
-export const Profile = withGraphql(connect()(_Profile));
+export const Profile = withGraphql(_Profile);

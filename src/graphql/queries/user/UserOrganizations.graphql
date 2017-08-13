@@ -1,5 +1,6 @@
 fragment UserOrganizations on OrganizationConnection {
     nodes {
+        id
         name
         avatarUrl
         url

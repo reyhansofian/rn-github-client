@@ -4,11 +4,12 @@ import reduxThunk from 'redux-thunk';
 
 import { rootReducer } from './rootReducer';
 import dataService from './dataService';
+import { client } from './apolloClient';
 
 const getMiddleware = () => {
   const middlewares = [reduxThunk, dataService];
 
-  return applyMiddleware(...middlewares);
+  return applyMiddleware(...middlewares, client.middleware());
 };
 
 const getEnhancers = () => {
@@ -34,5 +35,6 @@ if (__DEV__) {
 
 export const configureStore = createStore(
   rootReducer,
+  {},
   composeEnhancers(getMiddleware(), ...getEnhancers())
 );
