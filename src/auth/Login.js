@@ -3,7 +3,14 @@
 // @flow
 
 import React, { Component } from 'react';
-import { AsyncStorage, Platform, View, Image, StyleSheet, Linking } from 'react-native';
+import {
+  AsyncStorage,
+  Platform,
+  View,
+  Image,
+  StyleSheet,
+  Linking
+} from 'react-native';
 import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 import queryString from 'query-string';
@@ -20,11 +27,11 @@ import { login } from './authActions';
 const style = StyleSheet.create({
   logo: {
     width: 350,
-    height: 130,
+    height: 130
   },
   formLabel: { flexDirection: 'row', justifyContent: 'flex-start' },
   container: { flex: 1, marginTop: '50%' },
-  loginButton: { marginTop: 20 },
+  loginButton: { marginTop: 20 }
 });
 
 const stateRandom = Math.random().toString();
@@ -34,15 +41,15 @@ class _Login extends Component {
     navigation: Object,
     dispatch: Function,
     isAuthenticated: Boolean,
-    accessToken: string,
+    accessToken: string
   };
 
   static contextTypes = {
-    store: React.PropTypes.object,
+    store: React.PropTypes.object
   };
 
   state = {
-    code: '',
+    code: ''
   };
 
   componentDidMount() {
@@ -63,8 +70,11 @@ class _Login extends Component {
   }
 
   componentWillReceiveProps(props) {
+    // Persist the new props into storage
     if (props.accessToken && props.isAuthenticated) {
-      const persistor = createPersistor(this.context.store, { storage: AsyncStorage });
+      const persistor = createPersistor(this.context.store, {
+        storage: AsyncStorage
+      });
 
       Promise.resolve(persistor.rehydrate(props)).then(() => {
         // This restart is a hack for Apollo client setup
@@ -80,7 +90,7 @@ class _Login extends Component {
       [
         'https://github.com/login/oauth/authorize?response_type=token&',
         `client_id=${config.clientId}&`,
-        `redirect_uri=rnghclient://oauth&scope=user%20repo%20read:org&state=${stateRandom}`,
+        `redirect_uri=rnghclient://oauth&scope=user%20repo%20read:org&state=${stateRandom}`
       ].join('')
     );
 
@@ -106,7 +116,11 @@ class _Login extends Component {
         <Styles.flexCenterView>
           <Image source={Images.githubLogo} style={style.logo} />
         </Styles.flexCenterView>
-        <Button title={'Login'} buttonStyle={style.loginButton} onPress={() => this.signIn()} />
+        <Button
+          title={'Login'}
+          buttonStyle={style.loginButton}
+          onPress={() => this.signIn()}
+        />
       </View>
     );
   }
@@ -114,7 +128,7 @@ class _Login extends Component {
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
-  accessToken: state.auth.accessToken,
+  accessToken: state.auth.accessToken
 });
 
 export const Login = connect(mapStateToProps)(_Login);

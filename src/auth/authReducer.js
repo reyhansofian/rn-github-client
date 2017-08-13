@@ -15,7 +15,8 @@ const initialState = {
   isPendingUser: false,
   isPendingOrgs: false,
   isPendingEvents: false,
-  error: ''
+  error: '',
+  pageCount: 10
 };
 
 const omitTypename = map(omit(['__typename']));
@@ -53,6 +54,7 @@ export const authReducer = (state = initialState, action = {}) => {
         isLoading: true
       });
     case 'LOGIN_SUCCESS':
+      console.log('[DEBUG] payload', payload);
       return Object.assign({}, state, {
         isLoggingIn: false,
         isAuthenticated: true,

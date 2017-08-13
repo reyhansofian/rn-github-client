@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
+import { connect } from 'react-redux';
 
 import USER_QUERY from '../graphql/queries/user/User.graphql';
 import { fetchProfile } from './authActions';
@@ -42,17 +43,15 @@ class _Profile extends Component {
 }
 
 const withGraphql = graphql(USER_QUERY, {
-  options: () => ({
+  options: props => ({
     variables: {
-      user: 'reyhansofian',
-      firstCount: 10
-    },
-    update: (prev, action, variables) => {
-      console.log('[DEBUG] action', action);
-
-      return prev;
+      firstCount: props.count
     }
   })
 });
 
-export const Profile = withGraphql(_Profile);
+const mapStateToProps = state => ({
+  count: state.auth.pageCount
+});
+
+export const Profile = compose(connect(mapStateToProps), withGraphql)(_Profile);

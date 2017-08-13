@@ -2,8 +2,8 @@
 #import "./UserStarredRepositories.graphql"
 #import "./UserOrganizations.graphql"
 
-query User($user: String!, $firstCount: Int!) {
-    user(login: $user) {
+query User($firstCount: Int!) {
+    user: viewer {
         id
         avatarUrl
         bio
