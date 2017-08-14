@@ -4015,6 +4015,14 @@ react-native-elements@^0.15.0:
     react-native-side-menu "^0.20.1"
     react-native-tab-navigator "^0.3.3"
 
+react-native-parallax-scrollview@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/react-native-parallax-scrollview/-/react-native-parallax-scrollview-1.0.5.tgz#f5584e2ffb118d133f077a29a4a3e8bff76fef72"
+
+"react-native-parallax-scrollview@git+https://github.com/reyhansofian/react-native-parallax-scrollview.git":
+  version "1.0.5"
+  resolved "git+https://github.com/reyhansofian/react-native-parallax-scrollview.git#48d1f550f7e1a54dd6601bd906e9a62e789d09a6"
+
 react-native-restart@^0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/react-native-restart/-/react-native-restart-0.0.3.tgz#e1c0adb5239245486b61a10b70a9cfd05d89c53a"

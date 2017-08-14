@@ -19,6 +19,7 @@
     "react-native": "0.46.4",
     "react-native-dotenv": "^0.1.0",
     "react-native-elements": "^0.15.0",
+    "react-native-parallax-scrollview": "git+https://github.com/reyhansofian/react-native-parallax-scrollview.git",
     "react-native-restart": "^0.0.3",
     "react-native-safari-view": "^2.0.0",
     "react-native-vector-icons": "^4.3.0",
