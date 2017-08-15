@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Image, Dimensions, ScrollView, View, Text } from 'react-native';
 import { graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
+import { Divider, List, ListItem } from 'react-native-elements';
 import ParallaxScrollView from 'react-native-parallax-scrollview';
 
 import USER_QUERY from '../graphql/queries/user/User.graphql';
@@ -21,43 +22,90 @@ class _Profile extends Component {
     actionDispatcher: React.PropTypes.func
   };
 
-  constructor() {
-    super();
-
-    this.renderOrgs = this.renderOrgs.bind(this);
-    this.renderStats = this.renderStats.bind(this);
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.data.viewer)
       this.context.actionDispatcher(fetchProfile(nextProps.data.viewer));
   }
 
-  renderOrgs() {
-    return this.props.data.viewer.orgs.nodes.map(org =>
-      <View
-        key={org.id}
-        style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}
-      >
-        <Image
-          source={{ uri: org.avatarUrl }}
-          style={{ height: 60, width: 60, borderRadius: 30 }}
-        />
-        <Text
-          style={{
-            maxWidth: 100,
-            color: 'white',
-            paddingTop: 5,
-            textAlign: 'center'
-          }}
+  renderOrgs = () =>
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'baseline',
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 5,
+        paddingRight: 5,
+        flexWrap: 'wrap'
+      }}
+    >
+      {this.props.data.viewer.orgs.nodes.map(org =>
+        <View
+          key={org.id}
+          style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}
         >
-          {org.name}
-        </Text>
-      </View>
-    );
-  }
+          <Image
+            source={{ uri: org.avatarUrl }}
+            style={{ height: 60, width: 60, borderRadius: 30 }}
+          />
+          <Text
+            style={{
+              maxWidth: 100,
+              paddingTop: 5,
+              textAlign: 'center'
+            }}
+          >
+            {org.name}
+          </Text>
+        </View>
+      )}
+    </View>;
 
-  renderStats() {
+  renderUserInfo = () => {
+    const { viewer } = this.props.data;
+    const userInfo = [
+      {
+        title: 'Bio',
+        icon: 'person',
+        subtitle: viewer.bio
+      },
+      {
+        title: 'Company',
+        icon: 'business',
+        subtitle: viewer.company
+      },
+
+      {
+        title: 'Email',
+        icon: 'email',
+        subtitle: viewer.email
+      },
+      {
+        title: 'Location',
+        icon: 'my-location',
+        subtitle: viewer.location
+      }
+    ];
+
+    return (
+      <List containerStyle={{ marginTop: 0, borderTopColor: '#e1e8ee' }}>
+        {userInfo.map((item, i) =>
+          <ListItem
+            key={i}
+            title={item.title}
+            leftIcon={{ name: item.icon }}
+            subtitle={item.subtitle}
+            titleStyle={{ fontWeight: 'bold' }}
+            containerStyle={{ borderBottomColor: '#e1e8ee', paddingLeft: 10 }}
+            hideChevron
+          />
+        )}
+      </List>
+    );
+  };
+
+  renderStats = () => {
     const { followers, following, repos, stars } = this.props.data.viewer;
 
     return (
@@ -104,7 +152,7 @@ class _Profile extends Component {
         </View>
       </View>
     );
-  }
+  };
 
   render() {
     const { loading, viewer } = this.props.data;
@@ -118,6 +166,7 @@ class _Profile extends Component {
     }
 
     console.log('[DEBUG] viewer', viewer);
+
     return (
       <ParallaxScrollView
         windowHeight={SCREEN_HEIGHT * 0.4}
@@ -126,24 +175,25 @@ class _Profile extends Component {
         userTitle={`@${viewer.login}`}
         userImage={viewer.avatarUrl}
       >
-        <ScrollView
-          style={{ flex: 1, backgroundColor: 'rgba(228, 117, 125, 1)' }}
-        >
+        <ScrollView style={{ flex: 1 }}>
+          <Divider />
           {this.renderStats()}
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'baseline',
-              paddingTop: 10,
-              paddingBottom: 10,
-              paddingLeft: 5,
-              paddingRight: 5,
-              flexWrap: 'wrap'
-            }}
-          >
-            {this.renderOrgs()}
+          <Divider />
+          <View style={{ padding: 20 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>
+              Information
+            </Text>
           </View>
+          <View>
+            {this.renderUserInfo()}
+          </View>
+          <View style={{ padding: 20 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>
+              Organizations
+            </Text>
+          </View>
+          <Divider />
+          {this.renderOrgs()}
         </ScrollView>
       </ParallaxScrollView>
     );
