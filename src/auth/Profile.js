@@ -12,7 +12,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 class _Profile extends Component {
   props: {
     data: {
-      user: Object,
+      viewer: Object,
       loading: Boolean
     }
   };
@@ -25,15 +25,16 @@ class _Profile extends Component {
     super();
 
     this.renderOrgs = this.renderOrgs.bind(this);
+    this.renderStats = this.renderStats.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.data.user)
-      this.context.actionDispatcher(fetchProfile(nextProps.data.user));
+    if (nextProps.data.viewer)
+      this.context.actionDispatcher(fetchProfile(nextProps.data.viewer));
   }
 
-  renderOrgs(orgs) {
-    return orgs.nodes.map(org =>
+  renderOrgs() {
+    return this.props.data.viewer.orgs.nodes.map(org =>
       <View
         key={org.id}
         style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}
@@ -56,8 +57,57 @@ class _Profile extends Component {
     );
   }
 
+  renderStats() {
+    const { followers, following, repos, stars } = this.props.data.viewer;
+
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          backgroundColor: '#2e2f31',
+          padding: 10
+        }}
+      >
+        <View
+          style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>
+            {repos.totalCount}
+          </Text>
+          <Text style={{ fontSize: 14, color: 'white' }}>Repos</Text>
+        </View>
+        <View
+          style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>
+            {stars.totalCount}
+          </Text>
+          <Text style={{ fontSize: 14, color: 'white' }}>Stars</Text>
+        </View>
+        <View
+          style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>
+            {following.totalCount}
+          </Text>
+          <Text style={{ fontSize: 14, color: 'white' }}>Following</Text>
+        </View>
+        <View
+          style={{ padding: 5, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>
+            {followers.totalCount}
+          </Text>
+          <Text style={{ fontSize: 14, color: 'white' }}>Followers</Text>
+        </View>
+      </View>
+    );
+  }
+
   render() {
-    const { loading, user } = this.props.data;
+    const { loading, viewer } = this.props.data;
 
     if (loading) {
       return (
@@ -67,17 +117,19 @@ class _Profile extends Component {
       );
     }
 
+    console.log('[DEBUG] viewer', viewer);
     return (
       <ParallaxScrollView
         windowHeight={SCREEN_HEIGHT * 0.4}
-        userName={user.name}
-        navBarTitle={user.name}
-        userTitle={`@${user.login}`}
-        userImage={user.avatarUrl}
+        userName={viewer.name}
+        navBarTitle={viewer.name}
+        userTitle={`@${viewer.login}`}
+        userImage={viewer.avatarUrl}
       >
         <ScrollView
           style={{ flex: 1, backgroundColor: 'rgba(228, 117, 125, 1)' }}
         >
+          {this.renderStats()}
           <View
             style={{
               flexDirection: 'row',
@@ -90,7 +142,7 @@ class _Profile extends Component {
               flexWrap: 'wrap'
             }}
           >
-            {this.renderOrgs(user.orgs)}
+            {this.renderOrgs()}
           </View>
         </ScrollView>
       </ParallaxScrollView>

@@ -3,7 +3,7 @@
 #import "./UserOrganizations.graphql"
 
 query User($firstCount: Int!) {
-    user: viewer {
+    viewer {
         id
         avatarUrl
         bio
@@ -14,6 +14,12 @@ query User($firstCount: Int!) {
         name
         login
         location
+        followers {
+            totalCount
+        } 
+        following {
+            totalCount
+        }
         orgs: organizations(first: $firstCount) {
             ...UserOrganizations
         }

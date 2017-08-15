@@ -1,4 +1,5 @@
 fragment UserRepositories on RepositoryConnection {
+    totalCount
     nodes {
         id
         nameWithOwner

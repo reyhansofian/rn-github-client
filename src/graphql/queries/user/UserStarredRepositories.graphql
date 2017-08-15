@@ -1,4 +1,5 @@
 fragment UserStarredRepositories on StarredRepositoryConnection {
+    totalCount
     nodes {
         id
         name

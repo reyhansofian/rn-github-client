@@ -33,6 +33,7 @@ class App extends Component {
   }
 
   componentWillMount() {
+    //purgeStoredState({ storage: AsyncStorage });
     persistStore(configureStore, { storage: AsyncStorage }, () => {
       this.setState({ isRehydrated: true });
     });
